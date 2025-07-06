@@ -1,4 +1,4 @@
-// SurveyItemController.java
+// SurveyItemController.java - CORRECTED VERSION
 package com.survey.controller;
 
 import com.survey.model.SurveyItem;
@@ -43,7 +43,7 @@ public class SurveyItemController {
     @Autowired
     private SurveyItemService surveyItemService;
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<SurveyItem> createSurveyItem(@RequestBody SurveyItem surveyItem) {
         try {
             SurveyItem created = surveyItemService.createSurveyItem(surveyItem);
@@ -64,16 +64,5 @@ public class SurveyItemController {
         Optional<SurveyItem> item = surveyItemService.getSurveyItemById(id);
         return item.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    // Fixed POST method in SurveyItemController.java
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<SurveyItem> createSurveyItem(@RequestBody SurveyItem surveyItem) {
-        try {
-            SurveyItem created = surveyItemService.createSurveyItem(surveyItem);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 }

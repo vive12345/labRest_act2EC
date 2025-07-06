@@ -1,4 +1,4 @@
-// SurveyController.java
+// SurveyController.java - CORRECTED VERSION
 package com.survey.controller;
 
 import com.survey.model.*;
@@ -41,7 +41,7 @@ public class SurveyController {
     private SurveyService surveyService;
 
     // API 2: Create a survey
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Survey> createSurvey(@RequestBody Survey survey) {
         try {
             Survey created = surveyService.createSurvey(survey);
@@ -182,17 +182,6 @@ public class SurveyController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    // Fixed POST method in SurveyController.java
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Survey> createSurvey(@RequestBody Survey survey) {
-        try {
-            Survey created = surveyService.createSurvey(survey);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
