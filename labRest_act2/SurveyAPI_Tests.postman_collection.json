@@ -1,0 +1,826 @@
+{
+  "info": {
+    "name": "Survey REST API Tests - Complete Collection",
+    "description": "Complete test collection for Survey REST API - includes 20 test cases (10 passing, 10 failing)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API 1 - Create Survey Item",
+      "item": [
+        {
+          "name": "1. Create Survey Item - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has survey item properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('questionStem');",
+                  "    pm.expect(jsonData).to.have.property('candidateAnswers');",
+                  "    pm.expect(jsonData).to.have.property('correctAnswer');",
+                  "    pm.collectionVariables.set('createdSurveyItemId', jsonData.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionStem\": \"What is the capital of Italy?\",\n  \"candidateAnswers\": [\"Rome\", \"Milan\", \"Naples\", \"Turin\"],\n  \"correctAnswer\": \"Rome\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/survey-items",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-items"]
+            }
+          }
+        },
+        {
+          "name": "1. Create Survey Item - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invalidField\": \"This should fail\",\n  \"badFormat\": 123\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/survey-items",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-items"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 2 - Create Survey",
+      "item": [
+        {
+          "name": "2. Create Survey - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has survey properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('title');",
+                  "    pm.expect(jsonData).to.have.property('state', 'CREATED');",
+                  "    pm.collectionVariables.set('createdSurveyId', jsonData.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Geography Quiz - Test\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys"]
+            }
+          }
+        },
+        {
+          "name": "2. Create Survey - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invalidField\": \"This should fail\",\n  \"badFormat\": 123\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 3 - Add Survey Item to Survey",
+      "item": [
+        {
+          "name": "3. Add Survey Item to Survey - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Survey contains the added item\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.surveyItemIds).to.include(pm.collectionVariables.get('createdSurveyItemId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"surveyItemId\": \"{{createdSurveyItemId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/surveys/{{createdSurveyId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys", "{{createdSurveyId}}", "items"]
+            }
+          }
+        },
+        {
+          "name": "3. Add Survey Item to Survey - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"surveyItemId\": \"invalid-survey-item-id-12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/surveys/{{createdSurveyId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys", "{{createdSurveyId}}", "items"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 4 - Get All Surveys",
+      "item": [
+        {
+          "name": "4. Get All Surveys - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    if (jsonData.length > 0) {",
+                  "        pm.collectionVariables.set('existingSurveyId', jsonData[0].id);",
+                  "        // Find a completed survey for instance creation",
+                  "        const completedSurvey = jsonData.find(s => s.state === 'COMPLETED');",
+                  "        if (completedSurvey) {",
+                  "            pm.collectionVariables.set('completedSurveyId', completedSurvey.id);",
+                  "        }",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys"]
+            }
+          }
+        },
+        {
+          "name": "4. Get All Surveys - FAIL (Wrong Method)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 405 Method Not Allowed or 400\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 405]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"badMethod\": \"Should use GET not POST\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/surveys",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 5 - Get Specific Survey",
+      "item": [
+        {
+          "name": "5. Get Specific Survey - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has survey with items\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('title');",
+                  "    pm.expect(jsonData).to.have.property('surveyItems');",
+                  "    pm.expect(jsonData.surveyItems).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/surveys/{{existingSurveyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys", "{{existingSurveyId}}"]
+            }
+          }
+        },
+        {
+          "name": "5. Get Specific Survey - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/surveys/invalid-survey-id-999",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys", "invalid-survey-id-999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Setup - Update Survey State to COMPLETED",
+      "item": [
+        {
+          "name": "Update Survey State to COMPLETED",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Survey state is COMPLETED\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.state).to.eql('COMPLETED');",
+                  "    pm.collectionVariables.set('completedSurveyId', jsonData.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"state\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/surveys/{{createdSurveyId}}/state",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys", "{{createdSurveyId}}", "state"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 6 - Create Survey Instance",
+      "item": [
+        {
+          "name": "6. Create Survey Instance - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has survey instance properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('surveyId');",
+                  "    pm.expect(jsonData).to.have.property('userName');",
+                  "    pm.expect(jsonData).to.have.property('surveyItemInstances');",
+                  "    pm.collectionVariables.set('createdSurveyInstanceId', jsonData.id);",
+                  "    if (jsonData.surveyItemInstances.length > 0) {",
+                  "        pm.collectionVariables.set('itemInstanceId', jsonData.surveyItemInstances[0].id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"surveyId\": \"{{completedSurveyId}}\",\n  \"userName\": \"testuser123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances"]
+            }
+          }
+        },
+        {
+          "name": "6. Create Survey Instance - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"surveyId\": \"invalid-survey-id-12345\",\n  \"userName\": \"testuser\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 7 - Submit Answer",
+      "item": [
+        {
+          "name": "7. Submit Answer - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Survey instance updated\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('surveyItemInstances');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemInstanceId\": \"{{itemInstanceId}}\",\n  \"answer\": \"Rome\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances/{{createdSurveyInstanceId}}/answers",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances", "{{createdSurveyInstanceId}}", "answers"]
+            }
+          }
+        },
+        {
+          "name": "7. Submit Answer - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemInstanceId\": \"invalid-item-instance-id-12345\",\n  \"answer\": \"some answer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances/{{createdSurveyInstanceId}}/answers",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances", "{{createdSurveyInstanceId}}", "answers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 8 - Get Survey Instances by State",
+      "item": [
+        {
+          "name": "8. Get Survey Instances by State - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "    if (jsonData.length > 0) {",
+                  "        pm.collectionVariables.set('existingSurveyInstanceId', jsonData[0].id);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances?state=CREATED",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances"],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "CREATED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "8. Get Survey Instances by State - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances?state=INVALID_STATE",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances"],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "INVALID_STATE"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 9 - Get Specific Survey Instance",
+      "item": [
+        {
+          "name": "9. Get Specific Survey Instance - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has survey instance properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('surveyId');",
+                  "    pm.expect(jsonData).to.have.property('userName');",
+                  "    pm.expect(jsonData).to.have.property('surveyItemInstances');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances/{{createdSurveyInstanceId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances", "{{createdSurveyInstanceId}}"]
+            }
+          }
+        },
+        {
+          "name": "9. Get Specific Survey Instance - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/survey-instances/invalid-instance-id-999",
+              "host": ["{{baseUrl}}"],
+              "path": ["survey-instances", "invalid-instance-id-999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API 10 - Delete Survey",
+      "item": [
+        {
+          "name": "10. Delete Survey - PASS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204 No Content\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/surveys/{{createdSurveyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys", "{{createdSurveyId}}"]
+            }
+          }
+        },
+        {
+          "name": "10. Delete Survey - FAIL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404 Not Found\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/surveys/invalid-survey-id-999",
+              "host": ["{{baseUrl}}"],
+              "path": ["surveys", "invalid-survey-id-999"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set base URL if not already set",
+          "if (!pm.collectionVariables.get('baseUrl')) {",
+          "    pm.collectionVariables.set('baseUrl', 'http://localhost:8080/api');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "createdSurveyItemId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdSurveyId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "completedSurveyId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "existingSurveyId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "createdSurveyInstanceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "existingSurveyInstanceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "itemInstanceId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
