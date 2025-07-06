@@ -69,3 +69,23 @@ curl http://localhost:8080/api/survey-items
 # Get survey instance IDs
 curl http://localhost:8080/api/survey-instances
 ```
+
+# References
+
+1. GitHub REST API Documentation. (2023). GitHub, Inc. https://docs.github.com/en/rest
+
+2. Spring Boot Reference Documentation. (2023). VMware, Inc. https://docs.spring.io/spring-boot/
+
+3. APIDocJS - Inline Documentation for RESTful APIs. (2023). https://apidocjs.com/
+
+4. Postman Documentation. (2023). Postman, Inc. https://learning.postman.com/docs/
+
+5. cURL Documentation. (2023). Daniel Stenberg. https://curl.se/docs/
+
+6. Maven Documentation. (2023). Apache Software Foundation. https://maven.apache.org/guides/
+
+7. Java SE Documentation. (2023). Oracle Corporation. https://docs.oracle.com/en/java/
+
+8. Richardson, L., & Ruby, S. (2007). RESTful Web Services. O'Reilly Media.
+
+AI was used to generate quiz questions and IDs throughout this project.
