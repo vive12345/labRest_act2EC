@@ -1,4 +1,4 @@
-// WebConfig.java - Configure content negotiation for XML/JSON
+// WebConfig.java - Fixed content negotiation configuration
 package com.survey.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer
                 .favorParameter(false)
-                .favorPathExtension(false)
                 .ignoreAcceptHeader(false)
-                .useRegisteredExtensionsOnly(false)
                 .defaultContentType(MediaType.APPLICATION_JSON)
                 .mediaType("json", MediaType.APPLICATION_JSON)
                 .mediaType("xml", MediaType.APPLICATION_XML);
