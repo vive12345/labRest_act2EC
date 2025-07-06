@@ -41,7 +41,7 @@ public class SurveyController {
     private SurveyService surveyService;
 
     // API 2: Create a survey
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping
     public ResponseEntity<Survey> createSurvey(@RequestBody Survey survey) {
         try {
             Survey created = surveyService.createSurvey(survey);

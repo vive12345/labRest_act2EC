@@ -1,6 +1,6 @@
-// Survey.java - Collection of survey items
 package com.survey.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,8 @@ public class Survey {
     private final List<String> surveyItemIds;
     private SurveyState state;
 
+    // Primary constructor for JSON deserialization (creating new surveys)
+    @JsonCreator
     public Survey(@JsonProperty("title") String title) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
@@ -19,10 +21,8 @@ public class Survey {
         this.state = SurveyState.CREATED;
     }
 
-    public Survey(@JsonProperty("id") String id,
-            @JsonProperty("title") String title,
-            @JsonProperty("surveyItemIds") List<String> surveyItemIds,
-            @JsonProperty("state") SurveyState state) {
+    // Secondary constructor for internal use (when all fields are known)
+    public Survey(String id, String title, List<String> surveyItemIds, SurveyState state) {
         this.id = id;
         this.title = title;
         this.surveyItemIds = new ArrayList<>(surveyItemIds);

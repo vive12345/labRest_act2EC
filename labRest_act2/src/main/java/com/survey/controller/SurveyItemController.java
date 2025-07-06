@@ -43,7 +43,7 @@ public class SurveyItemController {
     @Autowired
     private SurveyItemService surveyItemService;
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping
     public ResponseEntity<SurveyItem> createSurveyItem(@RequestBody SurveyItem surveyItem) {
         try {
             SurveyItem created = surveyItemService.createSurveyItem(surveyItem);
