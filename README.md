@@ -21,19 +21,21 @@ cd labRest_act2
 
 ### Step 3: Test the API
 
-- For API testing with Postman: See [PostmanApi.md](./PostmanApi.md)
+- Complete Postman Testing Guide - 20 Test Cases: See [PostmanApi.md](./PostmanApi.md)
   Note : if unable to connect with postman then try curl command in given documnetation. highly recommneded postman testing.
 - [curlapi.md](./curlapi.md) for curl commands.
   Test with curl:
-
   ```bash
-  curl http://localhost:8080/api/surveys
+       curl http://localhost:8080/api/surveys
   ```
-
   Note : if the link is not working search for PostmanApi.md and curlapi.md docs.
 
-## API Documentation
+## Extra credit API Documentation
 
+Test these command for xml and json as well:
+curl -H "Accept: application/xml" http://localhost:8080/api/surveys
+curl -H "Accept: application/json" http://localhost:8080/api/surveys
+![alt text](image-12.png)
 View complete API documentation (used ):
 
 ```bash
@@ -53,34 +55,9 @@ open apidoc/index.html
 
 ## Base URL: `http://localhost:8080/api`
 
-# Complete Postman Testing Guide - 20 Test Cases
-
-## Step 1: Import Collection
-
-1. Open Postman
-2. Click "Import" (top left)
-3. Select file: `SurveyAPI_Tests.postman_collection.json`
-4. Click "Import"
-
-## Step 2: Set Environment
-
-1. Click gear icon ⚙️ (top right)
-2. Add environment: Name it "Local API"
-3. Add variable:
-   - Variable: `baseUrl`
-   - Value: `http://localhost:8080/api`
-4. Save and select this environment
-
-## Step 3: Start Your API
-
-```bash
-cd labRest_act2
-mvn spring-boot:run
-```
-
 ## Step 4: Get Bootstrap Data for Testing
 
-**IMPORTANT:** Before running tests, get actual IDs from your system:
+**IMPORTANT:** Before running tests, get actual IDs:
 
 ```bash
 # Get survey IDs
@@ -92,7 +69,3 @@ curl http://localhost:8080/api/survey-items
 # Get survey instance IDs
 curl http://localhost:8080/api/survey-instances
 ```
-
-Update your Postman variables with real IDs from the responses above.
-
-# FAILING TEST CASES (10)
