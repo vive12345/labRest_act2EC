@@ -1,10 +1,11 @@
-// SurveyItemController.java - CORRECTED VERSION
+// SurveyItemController.java - WITH XML SUPPORT
 package com.survey.controller;
 
 import com.survey.model.SurveyItem;
 import com.survey.service.SurveyItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -43,7 +44,8 @@ public class SurveyItemController {
     @Autowired
     private SurveyItemService surveyItemService;
 
-    @PostMapping
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SurveyItem> createSurveyItem(@RequestBody SurveyItem surveyItem) {
         try {
             SurveyItem created = surveyItemService.createSurveyItem(surveyItem);
@@ -53,13 +55,13 @@ public class SurveyItemController {
         }
     }
 
-    @GetMapping
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<List<SurveyItem>> getAllSurveyItems() {
         List<SurveyItem> items = surveyItemService.getAllSurveyItems();
         return ResponseEntity.ok(items);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SurveyItem> getSurveyItem(@PathVariable String id) {
         Optional<SurveyItem> item = surveyItemService.getSurveyItemById(id);
         return item.map(ResponseEntity::ok)

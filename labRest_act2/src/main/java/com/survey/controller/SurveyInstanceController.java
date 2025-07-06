@@ -1,10 +1,11 @@
-// SurveyInstanceController.java
+// SurveyInstanceController.java - WITH XML SUPPORT
 package com.survey.controller;
 
 import com.survey.model.*;
 import com.survey.service.SurveyInstanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -38,7 +39,8 @@ public class SurveyInstanceController {
     private SurveyInstanceService surveyInstanceService;
 
     // API 6: Create a survey instance of a survey for a user
-    @PostMapping
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SurveyInstance> createSurveyInstance(@RequestBody Map<String, String> request) {
         try {
             String surveyId = request.get("surveyId");
@@ -74,7 +76,9 @@ public class SurveyInstanceController {
      * @apiError 400 Survey instance already completed
      */
     // API 7: Accept an answer for a survey item instance
-    @PostMapping("/{instanceId}/answers")
+    @PostMapping(value = "/{instanceId}/answers", consumes = { MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SurveyInstance> submitAnswer(
             @PathVariable String instanceId,
             @RequestBody Map<String, String> request) {
@@ -114,7 +118,7 @@ public class SurveyInstanceController {
      *                    ]
      */
     // API 8: Retrieve survey instances by state (or all if no state given)
-    @GetMapping
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<List<SurveyInstance>> getSurveyInstances(
             @RequestParam(required = false) String state) {
         try {
@@ -144,7 +148,7 @@ public class SurveyInstanceController {
      * @apiError 404 Survey instance not found
      */
     // API 9: Retrieve a specific survey instance with all survey item instances
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<SurveyInstance> getSurveyInstance(@PathVariable String id) {
         Optional<SurveyInstance> instance = surveyInstanceService.getSurveyInstanceById(id);
         return instance.map(ResponseEntity::ok)

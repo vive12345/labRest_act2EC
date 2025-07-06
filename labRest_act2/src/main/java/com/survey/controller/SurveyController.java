@@ -1,10 +1,11 @@
-// SurveyController.java - CORRECTED VERSION
+// SurveyController.java - WITH XML SUPPORT
 package com.survey.controller;
 
 import com.survey.model.*;
 import com.survey.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -41,7 +42,8 @@ public class SurveyController {
     private SurveyService surveyService;
 
     // API 2: Create a survey
-    @PostMapping
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }, produces = {
+            MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<Survey> createSurvey(@RequestBody Survey survey) {
         try {
             Survey created = surveyService.createSurvey(survey);
@@ -70,7 +72,9 @@ public class SurveyController {
      * @apiError 400 Cannot add item (survey deleted or at capacity)
      */
     // API 3: Add a survey item to a survey
-    @PostMapping("/{surveyId}/items")
+    @PostMapping(value = "/{surveyId}/items", consumes = { MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<Survey> addSurveyItemToSurvey(
             @PathVariable String surveyId,
             @RequestBody Map<String, String> request) {
@@ -104,7 +108,7 @@ public class SurveyController {
      *                    ]
      */
     // API 4: Get the set of all surveys
-    @GetMapping
+    @GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<List<Survey>> getAllSurveys() {
         List<Survey> surveys = surveyService.getAllSurveys();
         return ResponseEntity.ok(surveys);
@@ -125,7 +129,7 @@ public class SurveyController {
      * @apiSuccess {String} survey.state Survey state
      */
     // API 5: Get a specific survey and the set of all survey items in that survey
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<Map<String, Object>> getSurveyWithItems(@PathVariable String id) {
         try {
             Optional<Survey> surveyOpt = surveyService.getSurveyById(id);
@@ -171,7 +175,9 @@ public class SurveyController {
     }
 
     // Helper endpoint to update survey state
-    @PutMapping("/{id}/state")
+    @PutMapping(value = "/{id}/state", consumes = { MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<Survey> updateSurveyState(
             @PathVariable String id,
             @RequestBody Map<String, String> request) {
